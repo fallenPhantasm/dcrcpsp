@@ -1,0 +1,16 @@
+Model
+  Variables
+    x00 = 0, >=0, <=30
+    x01 = 0, >=0, <=30
+    x11 = 0, >=0, <=20
+    x22 = 0, >=0, <=30
+  End Variables
+
+  Equations
+    x00 +x01 =30
+    x11 = 20
+    x22 = 30
+
+    minimize  x00 + (x01^2 + x11^2)^(1/2) + x22
+  End Equations
+End Model
