@@ -32,5 +32,7 @@ def heuristicHUDD(feasible_sequence,activities):
 	return makespan
 
 
-print heuristicHUDD([[0],[0,1],[2]],{0:Activity(0,20,2),1:Activity(1,30,2),2:Activity(2,40,1)})
+def heuristic2m(feasible_sequence, activities):
+	return 0
+
 
