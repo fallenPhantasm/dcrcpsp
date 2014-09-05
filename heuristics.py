@@ -1,7 +1,7 @@
 from model import *
 from sympy import *
 
-def heuristic1M(feasible_sequence, activities):
+def heuristic_1M(feasible_sequence, activities):
 	resource_allocation = []
 	for feasible_sequence_part in feasible_sequence:
 		resource_allocation_part = []
@@ -10,7 +10,7 @@ def heuristic1M(feasible_sequence, activities):
 		resource_allocation.append(resource_allocation_part)
 	return resource_allocation
 
-def heuristicHUDD(feasible_sequence,activities):
+def heuristic_HUDD(feasible_sequence,activities):
 	resource_allocation = []
 	activities_counts_dict = {}
 	for feasible_sequence_part in feasible_sequence:
@@ -32,7 +32,13 @@ def heuristicHUDD(feasible_sequence,activities):
 	return makespan
 
 
-def heuristic2m(feasible_sequence, activities):
-	return 0
+def heuristic_diffM(feasible_sequence, activities):
+	resource_allocation = []
+	for feasible_sequence_part in feasible_sequence:
+		resource_allocation_part = []
+		for activity_number in feasible_sequence_part:
+			resource_allocation_part.append(Rational(1,len(feasible_sequence_part)))
+		resource_allocation.append(resource_allocation_part)
+	return resource_allocation
 
 
