@@ -58,4 +58,7 @@ def heuristic_HUDD(feasible_sequence,activities):
 		makespan += solve(makespan_equation -1, m)[0]
 	return makespan
 
+def heuristic_HCRA(feasible_sequence,activities):
+    pass
+
 print heuristic_1M([[0,1],[1,2],[2]],[Activity(0,40,1),Activity(1,50,1),Activity(2,20,1)])
