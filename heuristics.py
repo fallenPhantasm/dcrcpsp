@@ -8,19 +8,45 @@ def heuristic_1M(feasible_sequence, activities):
 	for ending_activity_number in activity_execution_list:
 		ending_activity=activities[ending_activity_number]
 		resource_allocation=Rational(1,len(feasible_sequence[activity_execution_list.index(ending_activity_number)]))
-		processing_rate=Rational(resource_allocation**Rational(1/ending_activity.processing_function_root))
-		sequence_part_duration=Rational(ending_activity.overall_processing_demand/processing_rate)
+		processing_rate=Rational(resource_allocation**Rational(1/ending_activity.processing_rate_coeff))
+		sequence_part_duration=Rational(ending_activity.processing_demand/processing_rate)
 		for activity_number in feasible_sequence[activity_execution_list.index(ending_activity_number)]:
 			activity=activities[activity_number]
-			activity.overall_processing_demand-=Rational(sequence_part_duration*Rational(resource_allocation**Rational(1/activity.processing_function_root)))
+			activity.processing_demand-=Rational(sequence_part_duration*Rational(resource_allocation**Rational(1/activity.processing_rate_coeff)))
 		sequence_part_duration_list.append(sequence_part_duration)
 	last_sequence_duration=0
 	for activity in feasible_sequence[-1]:
 		last_activity=activities[activity]
-		last_processing_rate=Rational(resource_allocation**Rational(1/last_activity.processing_function_root))
-		activity_duration=Rational(last_activity.overall_processing_demand/processing_rate)
+		last_processing_rate=Rational(resource_allocation**Rational(1/last_activity.processing_rate_coeff))
+		activity_duration=Rational(last_activity.processing_demand/processing_rate)
 		last_sequence_duration= max(last_sequence_duration,activity_duration)	
 	sequence_part_duration_list.append(last_sequence_duration)
+	return sum(sequence_part_duration_list)
+
+def heuristic_1U(feasible_sequence, activities):
+	activity_execution_list = define_execution_order(feasible_sequence)
+	activities_completion = [0 for activity in activities]
+	sequence_part_duration_list = []
+	for ending_activites in activity_execution_list:
+		sequence_part_duration=0
+		for ending_activity_number in ending_activites:
+			ending_activity=activities[ending_activity_number]
+			resource_allocation=Rational(1,len(feasible_sequence[activity_execution_list.index(ending_activites)]))
+			processing_rate=Rational(resource_allocation**Rational(1,ending_activity.processing_rate_coeff))
+			sequence_part_duration=max(sequence_part_duration, Rational(ending_activity.processing_demand,processing_rate))
+		for activity_number in feasible_sequence[activity_execution_list.index(ending_activites)]:
+			activity=activities[activity_number]
+			activity.processing_demand-=Rational(sequence_part_duration*Rational(resource_allocation**Rational(1,activity.processing_rate_coeff)))
+		sequence_part_duration_list.append(sequence_part_duration)
+	last_sequence_duration=0
+	for activity in feasible_sequence[-1]:
+		last_activity=activities[activity]
+		last_processing_rate=Rational((Rational(1,len(feasible_sequence[-1])))**Rational(1,last_activity.processing_rate_coeff))
+		print activity,last_activity.processing_demand,last_processing_rate,Rational(1,len(feasible_sequence[-1]))
+		activity_duration=Rational(last_activity.processing_demand/last_processing_rate)
+		last_sequence_duration= max(last_sequence_duration,activity_duration)	
+	sequence_part_duration_list.append(last_sequence_duration)
+	print sequence_part_duration_list
 	return sum(sequence_part_duration_list)
 	
 
@@ -30,10 +56,11 @@ def define_execution_order(feasible_sequence):
 	for feasible_sequence_part in feasible_sequence:
 		previous_part_index = feasible_sequence.index(feasible_sequence_part) - 1
 		if previous_part_index>=0:
-			
+			activity_execution_list_part=[]
 			for activity_number in feasible_sequence[previous_part_index]:
 				if  activity_number not in feasible_sequence_part:
-					activity_execution_list.append(activity_number)
+					activity_execution_list_part.append(activity_number)
+			activity_execution_list.append(activity_execution_list_part)
 	return activity_execution_list
 
 def heuristic_HUDD(feasible_sequence,activities):
@@ -47,49 +74,21 @@ def heuristic_HUDD(feasible_sequence,activities):
 				activities_counts_dict[activity_number] = 1
 	activities_divided_dict = {}
 	for key in activities_counts_dict:
-		activities_divided_dict[key] = Rational(activities[key].overall_processing_demand, activities_counts_dict[key])
+		activities_divided_dict[key] = Rational(activities[key].processing_demand, activities_counts_dict[key])
 	makespan=0
 	for feasible_sequence_part in feasible_sequence:
 		makespan_equation = 0
 		m = symbols("m",positive=True)
 		for activity_number in feasible_sequence_part:
-			makespan_equation += (activities_divided_dict[activity_number]/m)**activities[activity_number].processing_function_root
+			makespan_equation += (activities_divided_dict[activity_number]/m)**activities[activity_number].processing_rate_coeff
 		makespan += solve(makespan_equation -1, m)[0]
 	return makespan
 
-def heuristic_HCRA(feasible_sequence, activities):
-	pass
 
-def define_activity_machine_pairing(activities,feasible_sequence):
+def ranking_heuristic(feasible_sequence,activities, ranking_list):
+	for feasible_sequence_part in feasible_sequence:
+		pass
 	
-	pass
-
-def heuristic1MRand(feasible_sequence, activities):
-	activity_execution_list = define_execution_order(feasible_sequence)
-	activities_completion = [0 for activity in activities]
-	priorities = []
-	sequence_part_duration_list = []
-	resource_allocation_list=[]
-	for ending_activity_number in activity_execution_list:
-		ending_activity=activities[ending_activity_number]
-		resource_allocation=Rational(1,len(feasible_sequence[activity_execution_list.index(ending_activity_number)]))
-		resource_allocation_list.append(resource_allocation)
-		processing_rate=Rational(resource_allocation**Rational(1/ending_activity.processing_function_root))
-		sequence_part_duration=Rational(ending_activity.overall_processing_demand/processing_rate)
-		for activity_number in feasible_sequence[activity_execution_list.index(ending_activity_number)]:
-			activity=activities[activity_number]
-			activity.overall_processing_demand-=Rational(sequence_part_duration*Rational(resource_allocation**Rational(1/activity.processing_function_root)))
-		sequence_part_duration_list.append(sequence_part_duration)
-	last_sequence_duration=0
-	for activity in feasible_sequence[-1]:
-		last_activity=activities[activity]
-		last_processing_rate=Rational(resource_allocation**Rational(1/last_activity.processing_function_root))
-		activity_duration=Rational(last_activity.overall_processing_demand/processing_rate)
-		last_sequence_duration= max(last_sequence_duration,activity_duration)	
-	sequence_part_duration_list.append(last_sequence_duration)
-	return sum(sequence_part_duration_list)
-
-
 
 	
-#print heuristic_1M([[0,1],[1,2],[2]],[Activity(0,40,1),Activity(1,50,1),Activity(2,20,1)])
+print heuristic_1U([[1,0],[2,4,3],[2,3]],[Activity(0,20,1),Activity(1,20,1),Activity(2,40,1),Activity(3,40,1),Activity(4,10,1)])

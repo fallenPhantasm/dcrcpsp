@@ -25,12 +25,12 @@ def generate_activity_list(how_many):
 		activity_list.append(Activity(i,randint(30,100),randint(1,2),None,None,None))
 	return activity_list
 
-def generate_feasible_sequence(activity_list,machines_number):
+def generate_feasible_sequence(activity_list):
 	feasible_sequence=[]
 	feasible_sequence_part=[]
 	activities_numbers=range(0,len(activity_list))
 
-	for i in range(0,randint(1,machines_number)):
+	for i in range(0,randint(1,len(activity_list)-1)):
 		feasible_sequence_part.append(activities_numbers.pop(0))
 	feasible_sequence.append(feasible_sequence_part)
 	
@@ -38,21 +38,22 @@ def generate_feasible_sequence(activity_list,machines_number):
 	while len(feasible_sequence_part) > 1 or len(activities_numbers)!=0:
 		new_feasible_sequence_part= copy(feasible_sequence_part)
 		if len(new_feasible_sequence_part) > 0 :
-			new_feasible_sequence_part.pop(randint(0,len(new_feasible_sequence_part)-1))
-			
-			for i in range(randint(1,machines_number-len(new_feasible_sequence_part))):
-				if len(activities_numbers) > 0:
-					new_feasible_sequence_part.append(activities_numbers.pop(0))
+			maxind=randint(1,len(new_feasible_sequence_part))
+			for x in range(1,maxind):
+				new_feasible_sequence_part.pop(randint(0,len(new_feasible_sequence_part)-1))
+		if len(activities_numbers) > 0:
+			for i in range(randint(1,len(activities_numbers))):
+				new_feasible_sequence_part.append(activities_numbers.pop(0))
 		feasible_sequence.append(new_feasible_sequence_part)
 		feasible_sequence_part=new_feasible_sequence_part
 	return feasible_sequence
 
 def main():
-	activity_list = generate_activity_list(15)
+	activity_list = generate_activity_list(6)
 	activity_numbers = range(0,len(activity_list))
 
 	print activity_list
-	feasible_sequence = generate_feasible_sequence(activity_list,2)
+	feasible_sequence = generate_feasible_sequence(activity_list)
 	print feasible_sequence
 	
 	solution_list = []
