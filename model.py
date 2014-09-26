@@ -23,21 +23,21 @@ def generate_activity_list(how_many):
     """
     activity_list = []
     for i in range(0, how_many):
-        activity_list.append(Activity(i, randint(30, 100), randint(1, 2), None, None, None))
+        activity_list.append(Activity(i, randint(30, 100), randint(1, 2)))
     return activity_list
 
 
-def generate_feasible_sequence(activity_list):
+def generate_feasible_sequence(activities_list):
     """
     Generates feasible sequence for given activity list
-    :param activity_list: list of activities to make feasible sequence of
+    :param activities_list: list of activities to make feasible sequence of
     :return: feasible sequence in a form of list of lists
     """
     feasible_sequence = []
     feasible_sequence_part = []
-    activities_numbers = range(0, len(activity_list))
+    activities_numbers = range(0, len(activities_list))
 
-    for i in range(0, randint(1, len(activity_list) - 1)):
+    for i in range(0, randint(1, len(activities_list) - 1)):
         feasible_sequence_part.append(activities_numbers.pop(0))
     feasible_sequence.append(feasible_sequence_part)
 

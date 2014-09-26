@@ -95,26 +95,25 @@ def ranking_heuristic(feasible_sequence, activities, ranking_dict):
             ending_activity = activities[ending_activity_number]
             resource_allocation = allocate_resources_ranking(ranking_dict, feasible_sequence[
                 activity_execution_list.index(ending_activities)], ending_activity_number)
-            processing_rate = Rational(resource_allocation ** Rational(1, ending_activity.processing_rate_coeff))
+            processing_rate = N((resource_allocation) ** Rational(1, ending_activity.processing_rate_coeff))
             sequence_part_duration = max(sequence_part_duration,
                                          Rational(ending_activity.processing_demand, processing_rate))
-        for activity_number in feasible_sequence[activity_execution_list.index(ending_activities)]:
-            activity = activities[activity_number]
+            for activity_number in feasible_sequence[activity_execution_list.index(ending_activities)]:
+                activity = activities[activity_number]
             resource_allocation = allocate_resources_ranking(ranking_dict, feasible_sequence[
                 activity_execution_list.index(ending_activities)], activity_number)
-            activity.processing_demand -= Rational(
-                sequence_part_duration * Rational(resource_allocation ** Rational(1, activity.processing_rate_coeff)))
-        sequence_part_duration_list.append(sequence_part_duration)
-    last_sequence_duration = 0
-    for activity in feasible_sequence[-1]:
-        last_activity = activities[activity]
-        last_processing_rate = Rational(
-            (Rational(1, len(feasible_sequence[-1]))) ** Rational(1, last_activity.processing_rate_coeff))
-        activity_duration = Rational(last_activity.processing_demand / last_processing_rate)
-        last_sequence_duration = max(last_sequence_duration, activity_duration)
-    sequence_part_duration_list.append(last_sequence_duration)
-    print sequence_part_duration_list
-    return sum(sequence_part_duration_list)
+            activity.processing_demand -= N(
+                sequence_part_duration * N(resource_allocation ** Rational(1, activity.processing_rate_coeff)))
+            sequence_part_duration_list.append(sequence_part_duration)
+            last_sequence_duration = 0
+            for activity in feasible_sequence[-1]:
+                last_activity = activities[activity]
+            last_processing_rate = Rational(
+                (Rational(1, len(feasible_sequence[-1]))) ** Rational(1, last_activity.processing_rate_coeff))
+            activity_duration = Rational(last_activity.processing_demand / last_processing_rate)
+            last_sequence_duration = max(last_sequence_duration, activity_duration)
+            sequence_part_duration_list.append(last_sequence_duration)
+    return Float(sum(sequence_part_duration_list))
 
 
 def allocate_resources_ranking(ranking_dict, feasible_sequence_part, activity_number):
