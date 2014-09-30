@@ -1,20 +1,7 @@
-from random import *
-from copy import *
-import time
+
 from scipy.optimize import minimize
 
 from heuristics import *
-
-
-class Activity:
-    def __init__(self, id, processing_demand, processing_rate_coeff, resource_demands, predecessors, successors):
-        self.id = id
-        self.processing_demand = processing_demand
-        self.processing_rate_coeff = processing_rate_coeff
-        self.resource_demands = resource_demands
-        self.predecessors = predecessors
-        self.successors = successors
-
 
 def makeLambda(demand_part_tuple, constraint, processing_demand):
     constraint -= processing_demand
@@ -38,7 +25,7 @@ def solve_SLSQP(feasible_sequence, activity_list):
         length_symbol = symbols("M{}".format(sequence_part_number), positive=True)
         # Creating equations for calculating minimal sequence part duration
         for activity_number in feasible_sequence_part:
-            demand_part = symbols("x_{}_{}".format(activity_number, sequence_part_number), positive=True)
+            demand_part = symbols("x_{}i_{}k".format(activity_number, sequence_part_number), positive=True)
             demand_part_list.append(demand_part)
             demand_part_counter += 1
             constraints_dict[activity_number] += demand_part
@@ -51,8 +38,7 @@ def solve_SLSQP(feasible_sequence, activity_list):
                 activity_number].processing_rate_coeff
 
         solution = solve(minimal_length_part_equation - 1, length_symbol)
-
-        solution_list.append(solution[-1])
+        solution_list.append(solution[0])
 
         # Creating objective function in its final form
     whole_solution = 0
@@ -77,7 +63,7 @@ def solve_SLSQP(feasible_sequence, activity_list):
         bnds.append((0, None))
 
     #initialization of all x with 1
-    init_val = (1,) * demand_part_counter
+    init_val = (0,) * demand_part_counter
     res = minimize(obj_function, init_val, constraints=tuple(cons_map_list), bounds=tuple(bnds), method='SLSQP',
                    options={"maxiter": 100000})
 

@@ -45,11 +45,12 @@ def generate_feasible_sequence(activities_list):
         new_feasible_sequence_part = copy(feasible_sequence_part)
         if len(new_feasible_sequence_part) > 0:
             maxind = randint(1, len(new_feasible_sequence_part))
-            for x in range(1, maxind):
+            for x in range(0, maxind):
                 new_feasible_sequence_part.pop(randint(0, len(new_feasible_sequence_part) - 1))
         if len(activities_numbers) > 0:
             for i in range(randint(1, len(activities_numbers))):
                 new_feasible_sequence_part.append(activities_numbers.pop(0))
-        feasible_sequence.append(new_feasible_sequence_part)
-        feasible_sequence_part = new_feasible_sequence_part
+        if len(new_feasible_sequence_part)>0:
+            feasible_sequence.append(new_feasible_sequence_part)
+            feasible_sequence_part = new_feasible_sequence_part
     return feasible_sequence
