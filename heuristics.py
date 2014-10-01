@@ -107,3 +107,32 @@ def process_activity(activity, resource_allocation, duration):
     activity.processing_demand -= duration * N(
         resource_allocation ** Rational(1, activity.processing_rate_coeff))
     pass
+
+def heuristic_end_favorable(feasible_sequence, activities):
+    activity_execution_list = define_execution_order(feasible_sequence)
+    sequence_duration_list = []
+    for feasible_sequence_part in feasible_sequence:
+        resource_allocation_dict = end_allocate_resource(feasible_sequence_part, activity_execution_list[feasible_sequence.index(feasible_sequence_part)], 0.2)
+        # find duration of m_k
+        sequence_part_duration = get_sequence_part_duration(
+            activity_execution_list[feasible_sequence.index(feasible_sequence_part)], activities,
+            resource_allocation_dict)
+        sequence_duration_list.append(Float(sequence_part_duration))
+        # deduct work from activities
+        for activity_number in feasible_sequence_part:
+            process_activity(activities[activity_number], resource_allocation_dict[activity_number],
+                             sequence_part_duration)
+    print sequence_duration_list
+    return Float(sum(sequence_duration_list))
+
+def end_allocate_resource(feasible_sequence_part, ending_activities, percent):
+    resource_allocation = {}
+
+    for activity in feasible_sequence_part:
+        resource_allocation[activity] = Float(1.00 / len(feasible_sequence_part) * (1 - percent))
+
+    additional_resource = N(percent/len(ending_activities))
+    for ending_activity in ending_activities:
+        if ending_activity in resource_allocation:
+            resource_allocation[ending_activity] += additional_resource
+    return resource_allocation
