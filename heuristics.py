@@ -86,26 +86,35 @@ def heuristic_HUDD(feasible_sequence, activities):
     return makespan
 
 
-def ranking_heuristic(feasible_sequence, activities, ranking_dict):
+def ranking_heuristic(feasible_sequence, activities):
     activity_execution_list = define_execution_order(feasible_sequence)
-    sequence_part_duration_list = []
-    return Float(sum(sequence_part_duration_list))
+    for feasible_sequence_part in feasible_sequence:
+        # create ranking of activities and resource allocation in feasible sequence
+        resource_allocation_dict = allocate_resource(feasible_sequence_part, activities)
+        # find duration of m_k
+
+        #deduct work from activities
+    return Float(sum())
 
 
-def allocate_resources_ranking(ranking_dict, feasible_sequence_part, activity_number, percent):
-    counter=0
+def allocate_resource(feasible_sequence_part, activities, percent):
+    resource_allocation = {}
+
     for activity in feasible_sequence_part:
-        if ranking_dict[activity_number] < ranking_dict[activity]:
-            counter +=1
-    weight = 100 + N((len(feasible_sequence_part) / 2)-counter) * percent
-    return weight
+        resource_allocation[activity] = Float(1.00 / len(feasible_sequence_part) * (1 - percent))
+
+    ranking_power = Float(len(feasible_sequence_part))
+    ranking_all = Float(sum(range(0, len(feasible_sequence_part) + 1)))
+    ranking = sorted(activities, key=lambda x: x.processing_rate_coeff)
+    for activity in ranking:
+        resource_allocation[activity.id] += N((ranking_power / ranking_all) * percent)
+        ranking_power -= 1
+    return resource_allocation
 
 
-def create_ranking_by_processingrate(activities):
-    ranking_dict = {}
-    ranking_positions = range(1, len(activities) + 1)
-    for activity in sorted(activities, key=lambda activity: activity.processing_rate_coeff):
-        ranking_dict[activity.id] = ranking_positions.pop(-1)
-    return ranking_dict
-
-
+def get_sequence_part_duration(ending_activities_numbers, activities, resource_allocation):
+    sequence_part_duration = 0
+    for activity_number in ending_activities_numbers:
+        processing_rate = N(resource_allocation ** Rational(1, activities[activity_number].processing_rate_coeff))
+        sequence_part_duration = max(sequence_part_duration,
+                                     Rational(activities[activity_number].processing_demand, processing_rate))
