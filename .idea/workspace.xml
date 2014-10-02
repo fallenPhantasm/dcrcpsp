@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c14a25a4-9406-427b-ac53-19dfc45d7a69" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/experiment.py" afterPath="$PROJECT_DIR$/experiment.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/heuristics.py" afterPath="$PROJECT_DIR$/heuristics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/solver.py" afterPath="$PROJECT_DIR$/solver.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="dcrcpsp.iws" />
@@ -394,7 +391,11 @@
       <created>1412263041391</created>
       <updated>1412263041391</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Another algorithm">
+      <created>1412283878295</created>
+      <updated>1412283878295</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -443,7 +444,8 @@
     <MESSAGE value="Minor changes" />
     <MESSAGE value="New heuristic - favoring ending activities" />
     <MESSAGE value="Little refactor, trying csv capabilities" />
-    <option name="LAST_COMMIT_MESSAGE" value="Little refactor, trying csv capabilities" />
+    <MESSAGE value="Another algorithm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Another algorithm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
