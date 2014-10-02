@@ -62,11 +62,11 @@ def solve_SLSQP(feasible_sequence, activity_list):
         cons_map_list.append({'type': 'ineq', 'fun': makeLambda(demand_part_tuple, demand_part, 0)})
         bnds.append((0, None))
 
-    #initialization of all x with 1
+    #initialization of all x with 0
     init_val = (0,) * demand_part_counter
     res = minimize(obj_function, init_val, constraints=tuple(cons_map_list), bounds=tuple(bnds), method='SLSQP',
                    options={"maxiter": 100000})
-
+    print res
     return res.fun
 
 

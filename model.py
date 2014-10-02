@@ -23,7 +23,7 @@ def generate_activity_list(how_many):
     """
     activity_list = []
     for i in range(0, how_many):
-        activity_list.append(Activity(i, randint(30, 100), randint(1, 2)))
+        activity_list.append(Activity(i, randint(30, 100), randint(1,2)))
     return activity_list
 
 
