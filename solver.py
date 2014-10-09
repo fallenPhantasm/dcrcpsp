@@ -38,7 +38,7 @@ def solve_SLSQP(feasible_sequence, activity_list):
                 activity_number].processing_rate_coeff
 
         solution = solve(minimal_length_part_equation - 1, length_symbol)
-        solution_list.append(solution[0])
+        solution_list.append(solution[-1])
 
         # Creating objective function in its final form
     whole_solution = 0

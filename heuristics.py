@@ -90,6 +90,53 @@ def allocate_resource_by_demand(feasible_sequence_part, activities, percent):
             ranking_power -= 1
     return resource_allocation
 
+def allocate_resource_by_negative_demand(feasible_sequence_part, activities, percent):
+    resource_allocation = {}
+
+    for activity in feasible_sequence_part:
+        resource_allocation[activity] = Float(1.00 / len(feasible_sequence_part) * (1 - percent))
+
+    ranking_power = Float(len(feasible_sequence_part))
+    ranking_all = Float(sum(range(0, len(feasible_sequence_part) + 1)))
+    ranking = sorted(activities, key=lambda x: -x.processing_demand)
+
+    for activity in ranking:
+        if activity in resource_allocation:
+            resource_allocation[activity.id] += N((ranking_power / ranking_all) * percent)
+            ranking_power -= 1
+    return resource_allocation
+
+def allocate_resource_by_coeff(feasible_sequence_part, activities, percent):
+    resource_allocation = {}
+
+    for activity in feasible_sequence_part:
+        resource_allocation[activity] = Float(1.00 / len(feasible_sequence_part) * (1 - percent))
+
+    ranking_power = Float(len(feasible_sequence_part))
+    ranking_all = Float(sum(range(0, len(feasible_sequence_part) + 1)))
+    ranking = sorted(activities, key=lambda x: x.processing_rate_coeff_)
+
+    for activity in ranking:
+        if activity in resource_allocation:
+            resource_allocation[activity.id] += N((ranking_power / ranking_all) * percent)
+            ranking_power -= 1
+    return resource_allocation
+
+def allocate_resource_by_negative_coeff(feasible_sequence_part, activities, percent):
+    resource_allocation = {}
+
+    for activity in feasible_sequence_part:
+        resource_allocation[activity] = Float(1.00 / len(feasible_sequence_part) * (1 - percent))
+
+    ranking_power = Float(len(feasible_sequence_part))
+    ranking_all = Float(sum(range(0, len(feasible_sequence_part) + 1)))
+    ranking = sorted(activities, key=lambda x: -x.processing_rate_coeff_)
+
+    for activity in ranking:
+        if activity in resource_allocation:
+            resource_allocation[activity.id] += N((ranking_power / ranking_all) * percent)
+            ranking_power -= 1
+    return resource_allocation
 
 def get_sequence_part_duration(ending_activities_numbers, activities, resource_allocation):
     sequence_part_duration = 0
@@ -175,4 +222,48 @@ def heuristic_ending_favoring_with_ranking(feasible_sequence, activities):
             process_activity(activities[activity_number], resource_allocation_dict[activity_number],
                              sequence_part_duration)
     return Float(sum(sequence_duration_list))
-    pass
+
+
+def another_ranking_method(feasible_sequence_part, activities, percent):
+    resource_allocation = {}
+
+    power_dict = {}
+    activities_list = []
+    values_set = set()
+    for activity in feasible_sequence_part:
+        resource_allocation[activity] = Float(1.00 / len(feasible_sequence_part) * (1 - percent))
+        values_set.add(activities[activity].processing_rate_coeff)
+        activities_list.append(activities[activity])
+        power_dict[activities[activity].processing_rate_coeff] = 0
+
+    for value in values_set:
+        for activity in activities_list:
+            if activity.processing_rate_coeff == value:
+                power_dict[value] += 1
+
+    ranking_sum = 0
+    for key, value in power_dict.items():
+        ranking_sum += value
+
+    for activity in feasible_sequence_part:
+        resource_allocation[activities[activity].id] += N(
+            (power_dict[activities[activity].processing_rate_coeff] / ranking_sum) * percent)
+    return resource_allocation
+
+def another_heuristic_ranking_based(feasible_sequence, activities):
+    activity_execution_list = define_execution_order(feasible_sequence)
+    sequence_duration_list = []
+    for feasible_sequence_part in feasible_sequence:
+        # create ranking of activities and resource allocation in feasible sequence
+        resource_allocation_dict = another_ranking_method(feasible_sequence_part, activities, 0.1)
+        # find duration of m_k
+        sequence_part_duration = get_sequence_part_duration(
+            activity_execution_list[feasible_sequence.index(feasible_sequence_part)], activities,
+            resource_allocation_dict)
+        sequence_duration_list.append(Float(sequence_part_duration))
+        # deduct work from activities
+        for activity_number in feasible_sequence_part:
+            process_activity(activities[activity_number], resource_allocation_dict[activity_number],
+                             sequence_part_duration)
+    return Float(sum(sequence_duration_list))
+
