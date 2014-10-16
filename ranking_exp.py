@@ -6,8 +6,8 @@ import csv
 import time
 
 def main():
-    activities_number=10
-    firstrow=["-coef","coef","demand","-demand","count","-count","demand*coef","-demand*coef", "ranking_another"]
+    activities_number=5
+    firstrow=["-coef","coef","demand","-demand","demand*coef","-demand*coef", "ranking_another"]
     quality_writer = csv.writer(open("rank{}.csv".format(activities_number), "wb"))
     quality_writer.writerow(firstrow)
     for i in range(0, 10):
@@ -24,9 +24,7 @@ def main():
             ranking_demcoef=heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),lambda x: x.processing_demand*x.processing_rate_coeff)
             ranking_demcoefneg=heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),lambda x: -x.processing_demand*x.processing_rate_coeff)
 
-
-
-            ranking_another=another_heuristic_ranking_based(feasible_sequence,deepcopy(activities_list))
+            ranking_another=another_heuristic_ranking_based_demand(feasible_sequence,deepcopy(activities_list))
             experiment_data=[]
             experiment_data.append(ranking_dem)
             experiment_data.append(ranking_demneg)
@@ -36,7 +34,5 @@ def main():
             experiment_data.append(ranking_demcoefneg)
             experiment_data.append(ranking_another)
             quality_writer.writerow(experiment_data)
-
-
 
 main();

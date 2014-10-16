@@ -7,12 +7,12 @@ import time
 
 def main():
     activities_number=10
-    firstrow=["SLSQP","EA","1U","HUDD","EA-rank","rank","another_rank"]
+    firstrow=["SLSQP","EA","1U","HUDD","EA-rank","rank","another_rank","group"]
     quality_writer = csv.writer(open("quality{}.csv".format(activities_number), "wb"))
     quality_writer.writerow(firstrow)
     time_writer = csv.writer(open("time{}.csv".format(activities_number), "wb"))
     time_writer.writerow(firstrow)
-    for i in range(0, 10):
+    for i in range(0, 1):
         print i
         activities_list = generate_activity_list(activities_number)
         for j in range(0, 10):
@@ -29,10 +29,12 @@ def main():
             t5=time.time()
             end_favoring_ranking=heuristic_ending_favoring_with_ranking(feasible_sequence,deepcopy(activities_list))
             t6=time.time()
-            ranking=heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),allocate_resource_by_demand)
+            ranking=heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),lambda x: x.processing_demand)
             t7=time.time()
-            ranking_another=another_heuristic_ranking_based(feasible_sequence,deepcopy(activities_list))
+            ranking_another=another_heuristic_ranking_based_demand(feasible_sequence,deepcopy(activities_list))
             t8=time.time()
+            group_heu=heuristic_group(feasible_sequence,deepcopy(activities_list),5)
+            t9=time.time()
             experiment_data=[]
             experiment_data.append(solver_result)
             experiment_data.append(end_favoring)
@@ -41,6 +43,7 @@ def main():
             experiment_data.append(end_favoring_ranking)
             experiment_data.append(ranking_another)
             experiment_data.append(ranking)
+            experiment_data.append(group_heu)
             quality_writer.writerow(experiment_data)
 
             time_data=[]
@@ -51,6 +54,7 @@ def main():
             time_data.append(t6-t5)
             time_data.append(t7-t6)
             time_data.append(t8-t7)
+            time_data.append(t9-t8)
             time_writer.writerow(time_data)
 
 
