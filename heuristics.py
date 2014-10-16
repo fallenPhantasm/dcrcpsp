@@ -248,12 +248,12 @@ def another_ranking_by_demand(feasible_sequence_part, activities, percent):
     return resource_allocation
 
 
-def another_heuristic_ranking_based_demand(feasible_sequence, activities):
+def another_heuristic_ranking_based_demand(feasible_sequence, activities, percent):
     activity_execution_list = define_execution_order(feasible_sequence)
     sequence_duration_list = []
     for feasible_sequence_part in feasible_sequence:
         # create ranking of activities and resource allocation in feasible sequence
-        resource_allocation_dict = another_ranking_by_demand(feasible_sequence_part, activities, 0.1)
+        resource_allocation_dict = another_ranking_by_demand(feasible_sequence_part, activities, percent)
         # find duration of m_k
         sequence_part_duration = get_sequence_part_duration(
             activity_execution_list[feasible_sequence.index(feasible_sequence_part)], activities,
@@ -266,7 +266,7 @@ def another_heuristic_ranking_based_demand(feasible_sequence, activities):
     return Float(sum(sequence_duration_list))
 
 
-def create_resource_allocation_by_groups(feasible_sequence_part, activities, m):
+def create_resource_allocation_by_groups(feasible_sequence_part, activities, m, score_lambda):
     percent = 0.3
     resource_dict = {}
     score_dict = {}
@@ -274,7 +274,7 @@ def create_resource_allocation_by_groups(feasible_sequence_part, activities, m):
     max_score = 0
 
     for activity_number in feasible_sequence_part:
-        curr_score = score(activities[activity_number])
+        curr_score = score_lambda(activities[activity_number])
         score_dict[activity_number] = curr_score
         min_score = min(min_score, curr_score)
         max_score = max(max_score, curr_score)
@@ -323,16 +323,12 @@ def create_resource_allocation_by_groups(feasible_sequence_part, activities, m):
     return resource_dict
 
 
-def score(activity):
-    return activity.processing_demand + 10 * activity.processing_rate_coeff
-
-
-def heuristic_group(feasible_sequence, activities, m):
+def heuristic_group(feasible_sequence, activities, m, score_lambda):
     activity_execution_list = define_execution_order(feasible_sequence)
     sequence_duration_list = []
     for feasible_sequence_part in feasible_sequence:
         ending_activities = activity_execution_list[feasible_sequence.index(feasible_sequence_part)]
-        resource_allocation_dict = create_resource_allocation_by_groups(feasible_sequence_part, activities, m)
+        resource_allocation_dict = create_resource_allocation_by_groups(feasible_sequence_part, activities, m, score_lambda)
         # find duration of m_k
         sequence_part_duration = get_sequence_part_duration(
             ending_activities, activities,
