@@ -18,7 +18,7 @@ def main():
         for i in range(0, 10):
             print i
             activities_list = generate_activity_list(activities_number)
-            for j in range(0, 10):
+            for j in range(0, 50):
                 feasible_sequence = generate_feasible_sequence(activities_list)
 
                 t1 = time.time()
