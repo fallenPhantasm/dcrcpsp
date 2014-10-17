@@ -21,7 +21,7 @@ def main():
 
                 feasible_sequence = generate_feasible_sequence(activities_list)
                 experiment_data=[]
-                experiment_data.append(solver.solve_SLSQP(feasible_sequence,deepcopy(activities_list)))
+                #experiment_data.append(solver.solve_SLSQP(feasible_sequence,deepcopy(activities_list)))
                 for percent in percent_list:
                     ranking_dem=heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),lambda x: x.processing_demand,percent)
                     ranking_demneg=heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),lambda x: -x.processing_demand,percent)
