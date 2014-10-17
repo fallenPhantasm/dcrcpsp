@@ -34,7 +34,7 @@ def main():
                                                                               deepcopy(activities_list))
                 t6 = time.time()
                 ranking = heuristic_ranking_based(feasible_sequence, deepcopy(activities_list),
-                                                  lambda x: x.processing_rate_coeff)
+                                                  lambda x: x.processing_rate_coeff,0.5)
                 t7 = time.time()
                 group_heu = heuristic_group(feasible_sequence, deepcopy(activities_list), 8,
                                             lambda x: x.processing_demand - 10 * x.processing_rate_coeff)
