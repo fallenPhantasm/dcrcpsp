@@ -8,7 +8,7 @@ from heuristics import *
 
 
 def main():
-    activities_list = [60,80,100,120,140,200,300,500]
+    activities_list = [140,200,300,500]
     for activities_number in activities_list:
         firstrow = ["HUDD", "EA", "1U", "EA-rank", "rank", "group"]
         quality_writer = csv.writer(open("final{}.csv".format(activities_number), "wb"))
